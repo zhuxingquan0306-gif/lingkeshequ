@@ -1,0 +1,29 @@
+{
+  "name": "lingkeshequ",
+  "version": "1.0.0",
+  "description": "灵可社区 - 互助委托平台，用灵可币连接每一个需求",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server --port=3000"
+  },
+  "keywords": [
+    "community",
+    "delegation",
+    "mutual-aid",
+    "cryptocurrency",
+    "web3",
+    "blockchain"
+  ],
+  "author": "灵可社区团队",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhuxingquan0306-gif/lingkeshequ.git"
+  },
+  "homepage": "https://lingke.com/community",
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.2.1"
+  }
+}
