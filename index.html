@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵可社区 - 互助委托平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1a1a1a;
+            --color-background: #ffffff;
+            --color-accent: #f5f5f5;
+            --color-text-secondary: #999999;
+            --color-border: #e5e5e5;
+            --color-gold: #d4a574;
+            --color-success: #22c55e;
+            --color-warning: #f59e0b;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter Tight', Arial, sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            transition: all 0.5s ease;
+            padding: 16px 32px;
+            border-radius: 50px;
+        }
+        
+        .nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav.scrolled .nav-logo {
+            color: var(--color-primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav.scrolled .nav-links a {
+            color: var(--color-primary);
+            opacity: 0.8;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .nav.scrolled .nav-links a:hover {
+            opacity: 1;
+        }
+        
+        .nav-cta {
+            padding: 10px 20px;
+            background: white;
+            color: var(--color-primary);
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .nav-cta:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.05);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2d2d2d 100%);
+            overflow: hidden;
+        }
+        
+        .particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 900px;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 24px;
+        }
+        
+        .hero-badge-icon {
+            font-size: 16px;
+        }
+        
+        .hero-title {
+            font-size: clamp(48px, 10vw, 96px);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: white;
+            color: var(--color-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .hero-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2);
+        }
+        
+        .hero-gradient {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, white, transparent);
+            z-index: 5;
+        }
+        
+        /* Stats Section */
+        .stats {
+            background: var(--color-accent);
+            padding: 60px 20px;
+        }
+        
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 120px 20px;
+            background: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-title {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+        
+        .section-desc {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .step-card {
+            background: var(--color-accent);
+            padding: 40px 30px;
+            border-radius: 24px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .step-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .step-desc {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Delegations Section */
+        .delegations {
+            padding: 120px 20px;
+            background: var(--color-accent);
+        }
+        
+        .delegations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .delegations-tabs {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .delegations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .delegation-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .delegation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        }
+        
+        .delegation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .delegation-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--color-accent);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .delegation-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .delegation-status.open {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--color-success);
+        }
+        
+        .delegation-status.progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--color-warning);
+        }
+        
+        .delegation-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .delegation-desc {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .delegation-pool {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #333 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .pool-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+        
+        .pool-amount {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .pool-token {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-left: 8px;
+        }
+        
+        .delegation-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .delegation-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .author-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .author-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .author-points {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+        
+        .delegation-btn {
+            padding: 10px 24px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .delegation-btn:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+        
+        /* Points Section */
+        .points {
+            padding: 120px 20px;
+            background: white;
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .points-content {
+            max-width: 500px;
+        }
+        
+        .points-title {
+            font-size: clamp(36px, 5vw, 48px);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .points-desc {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+        
+        .points-list {
+            list-style: none;
+        }
+        
+        .points-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .points-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .points-text h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .points-text p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+        
+        .points-visual {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2d2d2d 100%);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .points-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .points-card-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+        
+        .points-card-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .points-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+        
+        .points-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-gold), #e8c088);
+            border-radius: 10px;
+            width: 75%;
+        }
+        
+        /* Invitation Section */
+        .invitation {
+            padding: 120px 20px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #2d2d2d 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .invitation-title {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        .invitation-desc {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+        
+        .invitation-requirement {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 16px 32px;
+            margin-bottom: 40px;
+        }
+        
+        .requirement-icon {
+            font-size: 32px;
+        }
+        
+        .requirement-text {
+            text-align: left;
+        }
+        
+        .requirement-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .requirement-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .invitation-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: white;
+            color: var(--color-primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .invitation-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 80px 20px 40px;
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+        
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-desc {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            max-width: 400px;
+        }
+        
+        .footer-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-copyright {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .points-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .delegations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+        
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">灵可社区</a>
+            <div class="nav-links">
+                <a href="#how-it-works">如何运作</a>
+                <a href="#delegations">委托广场</a>
+                <a href="#points">社区积分</a>
+            </div>
+            <a href="#invitation" class="nav-cta">申请加入</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <canvas class="particle-canvas" id="particleCanvas"></canvas>
+        <div class="hero-content">
+            <div class="hero-badge reveal">
+                <span class="hero-badge-icon">🔒</span>
+                <span>封闭邀请制社区</span>
+            </div>
+            <h1 class="hero-title reveal">灵可社区</h1>
+            <p class="hero-subtitle reveal">互助委托平台，用灵可币连接每一个需求<br>发起委托、接受委托、共同完成，构建信任互助的社区生态</p>
+            <a href="#how-it-works" class="hero-cta reveal">
+                <span>了解如何运作</span>
+                <span>→</span>
+            </a>
+        </div>
+        <div class="hero-gradient"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item reveal">
+                <div class="stat-number">12,580+</div>
+                <div class="stat-label">正式用户</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number">45,230+</div>
+                <div class="stat-label">完成委托</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number">2.8M</div>
+                <div class="stat-label">灵可币流通</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number">98.5%</div>
+                <div class="stat-label">委托完成率</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title reveal">如何运作</h2>
+                <p class="section-desc reveal">简单四步，开启互助之旅</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card reveal">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📝</div>
+                    <h3 class="step-title">发起委托</h3>
+                    <p class="step-desc">使用灵可币发起委托，设定币池奖励，描述您的需求</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🤝</div>
+                    <h3 class="step-title">接受委托</h3>
+                    <p class="step-desc">其他社区用户浏览委托，选择感兴趣的进行接受</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">✅</div>
+                    <h3 class="step-title">完成委托</h3>
+                    <p class="step-desc">按要求完成委托任务，提交完成证明</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">💰</div>
+                    <h3 class="step-title">获得奖励</h3>
+                    <p class="step-desc">委托确认完成后，获得币池中的灵可币奖励</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Delegations Section -->
+    <section class="delegations" id="delegations">
+        <div class="container">
+            <div class="delegations-header">
+                <div>
+                    <h2 class="section-title reveal">委托广场</h2>
+                    <p class="section-desc reveal">发现需要帮助的人，或寻找能帮你的人</p>
+                </div>
+                <div class="delegations-tabs reveal">
+                    <button class="tab-btn active">全部</button>
+                    <button class="tab-btn">待接受</button>
+                    <button class="tab-btn">进行中</button>
+                </div>
+            </div>
+            <div class="delegations-grid">
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">👤 个人委托</span>
+                        <span class="delegation-status open">待接受</span>
+                    </div>
+                    <h3 class="delegation-title">帮忙设计一个Logo</h3>
+                    <p class="delegation-desc">需要为我的小型咖啡店设计一个简约风格的Logo，包含咖啡杯元素，希望3天内完成。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">500<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">☕</div>
+                            <div class="author-info">
+                                <span class="author-name">咖啡爱好者</span>
+                                <span class="author-points">680 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">接受委托</button>
+                    </div>
+                </div>
+                
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">👥 他人委托</span>
+                        <span class="delegation-status open">待接受</span>
+                    </div>
+                    <h3 class="delegation-title">为老人购买生活用品</h3>
+                    <p class="delegation-desc">邻居老人行动不便，需要有人帮忙购买米面粮油等生活用品，每周一次。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">300<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">❤️</div>
+                            <div class="author-info">
+                                <span class="author-name">爱心传递</span>
+                                <span class="author-points">920 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">接受委托</button>
+                    </div>
+                </div>
+                
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">🌍 事物委托</span>
+                        <span class="delegation-status open">待接受</span>
+                    </div>
+                    <h3 class="delegation-title">社区花园维护</h3>
+                    <p class="delegation-desc">社区公共花园需要定期浇水、除草，希望有园艺爱好者参与维护。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">800<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">🌱</div>
+                            <div class="author-info">
+                                <span class="author-name">绿色社区</span>
+                                <span class="author-points">1,250 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">接受委托</button>
+                    </div>
+                </div>
+                
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">👤 个人委托</span>
+                        <span class="delegation-status progress">进行中</span>
+                    </div>
+                    <h3 class="delegation-title">编程入门指导</h3>
+                    <p class="delegation-desc">希望有编程经验的朋友能提供Python入门指导，每周2小时，持续一个月。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">1,200<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">💻</div>
+                            <div class="author-info">
+                                <span class="author-name">学习达人</span>
+                                <span class="author-points">450 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">查看详情</button>
+                    </div>
+                </div>
+                
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">👥 他人委托</span>
+                        <span class="delegation-status open">待接受</span>
+                    </div>
+                    <h3 class="delegation-title">接送孩子放学</h3>
+                    <p class="delegation-desc">工作原因无法按时接孩子，需要有人帮忙接送到家，地点在市中心小学。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">400<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">👨‍👩‍👧</div>
+                            <div class="author-info">
+                                <span class="author-name">忙碌家长</span>
+                                <span class="author-points">720 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">接受委托</button>
+                    </div>
+                </div>
+                
+                <div class="delegation-card reveal">
+                    <div class="delegation-header">
+                        <span class="delegation-type">🌍 事物委托</span>
+                        <span class="delegation-status open">待接受</span>
+                    </div>
+                    <h3 class="delegation-title">流浪动物救助</h3>
+                    <p class="delegation-desc">小区发现流浪猫需要救助，需要有人帮忙捕捉、送医、寻找领养。</p>
+                    <div class="delegation-pool">
+                        <div class="pool-label">委托币池</div>
+                        <div class="pool-amount">600<span class="pool-token">LKC</span></div>
+                    </div>
+                    <div class="delegation-footer">
+                        <div class="delegation-author">
+                            <div class="author-avatar">🐱</div>
+                            <div class="author-info">
+                                <span class="author-name">动物保护者</span>
+                                <span class="author-points">890 积分</span>
+                            </div>
+                        </div>
+                        <button class="delegation-btn">接受委托</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Points Section -->
+    <section class="points" id="points">
+        <div class="container">
+            <div class="points-grid">
+                <div class="points-content">
+                    <h2 class="points-title reveal">社区积分</h2>
+                    <p class="points-desc reveal">灵可币只有被使用时，才会产生社区积分。社区积分是灵可世界里的权限基础。</p>
+                    <ul class="points-list">
+                        <li class="points-item reveal">
+                            <div class="points-icon">💎</div>
+                            <div class="points-text">
+                                <h4>积分获取</h4>
+                                <p>使用灵可币发起或接受委托，即可获得相应积分</p>
+                            </div>
+                        </li>
+                        <li class="points-item reveal">
+                            <div class="points-icon">🔓</div>
+                            <div class="points-text">
+                                <h4>权限解锁</h4>
+                                <p>达到500积分可加入灵可社区，更高积分解锁更多权益</p>
+                            </div>
+                        </li>
+                        <li class="points-item reveal">
+                            <div class="points-icon">🏆</div>
+                            <div class="points-text">
+                                <h4>信誉体系</h4>
+                                <p>积分代表社区贡献度，是信任互助的基础</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="points-visual reveal">
+                    <div class="points-card">
+                        <div class="points-card-label">当前积分</div>
+                        <div class="points-card-value">375</div>
+                        <div class="points-progress">
+                            <div class="points-progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="points-card">
+                        <div class="points-card-label">距离社区门槛</div>
+                        <div class="points-card-value">125 <span style="font-size: 18px; opacity: 0.6;">/ 500</span></div>
+                        <div class="points-progress">
+                            <div class="points-progress-bar" style="width: 25%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invitation Section -->
+    <section class="invitation" id="invitation">
+        <h2 class="invitation-title reveal">加入灵可社区</h2>
+        <p class="invitation-desc reveal">灵可社区是封闭邀请制社区，只有在善行天下积累足够功值的用户才能获得邀请资格</p>
+        <div class="invitation-requirement reveal">
+            <span class="requirement-icon">⭐</span>
+            <div class="requirement-text">
+                <div class="requirement-label">加入门槛</div>
+                <div class="requirement-value">善行天下功值 ≥ 500</div>
+            </div>
+        </div>
+        <a href="#" class="invitation-btn reveal">
+            <span>前往善行天下积累功值</span>
+            <span>→</span>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">灵可社区</div>
+                    <p class="footer-desc">互助委托平台，用灵可币连接每一个需求，构建信任互助的社区生态。</p>
+                </div>
+                <div>
+                    <h4 class="footer-title">平台</h4>
+                    <ul class="footer-links">
+                        <li><a href="#how-it-works">如何运作</a></li>
+                        <li><a href="#delegations">委托广场</a></li>
+                        <li><a href="#points">社区积分</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">生态</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">善行天下</a></li>
+                        <li><a href="#">灵可币</a></li>
+                        <li><a href="#">灵可世集</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">支持</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">联系我们</a></li>
+                        <li><a href="#">社区规则</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2024 灵可社区. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Navigation scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        
+        // Hero particle canvas
+        const particleCanvas = document.getElementById('particleCanvas');
+        const pCtx = particleCanvas.getContext('2d');
+        
+        function resizeParticleCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+        
+        const particles = [];
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * particleCanvas.width,
+                y: Math.random() * particleCanvas.height,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: Math.random() * 2 + 1
+            });
+        }
+        
+        function animateParticles() {
+            pCtx.fillStyle = 'rgba(26, 26, 26, 0.05)';
+            pCtx.fillRect(0, 0, particleCanvas.width, particleCanvas.height);
+            
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > particleCanvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > particleCanvas.height) p.vy *= -1;
+                
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                pCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                pCtx.fill();
+                
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 80) {
+                        pCtx.beginPath();
+                        pCtx.moveTo(p.x, p.y);
+                        pCtx.lineTo(p2.x, p2.y);
+                        pCtx.strokeStyle = `rgba(255, 255, 255, ${0.05 * (1 - dist / 80)})`;
+                        pCtx.stroke();
+                    }
+                });
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        
+        // Scroll reveal animations
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        revealElements.forEach((el, i) => {
+            gsap.fromTo(el, 
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: i * 0.05,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 85%',
+                        once: true
+                    }
+                }
+            );
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
